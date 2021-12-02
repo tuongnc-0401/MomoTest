@@ -1,37 +1,77 @@
 package com.company;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Calendar;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
-
+    // variable to store date, budget, percent of previous date
+    public static Date savedDate = new Date("12/1/2021");
+    public static int budget = 50000;
+    public static int percentWin = 10;
     public static void main(String[] args) {
-        Date savedDate = new Date("12/01/2021");
-        Date currentDate = new Date();
-
         int totalMoney = 0;
-        int leftMoney = 0;
-
-
-//        System.out.println("------- Welcome Coin-Operated Soda Machine----------");
-//        System.out.println("Please choose an action");
-//        System.out.println("1. Enter money.");
-//        System.out.println("2. Choose product");
-//        System.out.println("3. Exit");
-//        System.out.println("---------------------------");
-//        System.out.print("Choose number (1-3): ");
-//        Scanner input = new Scanner(System.in);
-//
-//        String number;
-//        for(number = input.nextLine().trim(); !number.equals("1") && !number.equals("2") && !number.equals("3"); number = input.nextLine().trim()) {
-//            System.out.println("Your input is incorrect! Please choose a number from 1 to 3!");
-//            System.out.print("Choose number (1-3): ");
-//        }
         totalMoney = inputMoney();
         choosePorduct(totalMoney);
+
+    }
+
+    /**
+     * this function is called, when user buy 3 consecutive same product,
+     * it is luck charm for user to get a free product
+     * @param product: name of product
+     * @param value: value of product
+     */
+    private static void isLucky (String product, int value){
+        // send notification for user
+        System.out.println("You buy more than 3 "+ product+" , so you have a chance to win a free" +
+                " product!");
+
+        // check available promotion every transaction, to update percentWin
+        checkAvailablePromotion();
+
+        // random a number
+        int foo = (int) (Math.random() * 100);
+
+        // if number is less chances %, user is lucky and got the prizes
+        if (foo <= percentWin) {
+            if(budget> value){ // if available budget is higher the product prices
+                System.out.println("=================================================");
+                System.out.println("|| Congratulation, You got a free "+product+ " ||");
+                System.out.println("=================================================");
+                budget-= value;
+            } else { // if available budget is not enough
+                System.out.println("Sorry! Better luck next time!");
+            }
+        } else { // if user is not lucky
+            System.out.println("Sorry! Better luck next time!");
+        }
+    }
+
+    /**
+     *  this function is used to check available promotion of every purchase transaction
+     */
+    private static void checkAvailablePromotion() {
+        Date currentDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        // check it into a new day
+        if ((sdf.format(currentDate).compareTo(sdf.format(savedDate))) >= 1) {
+            // check the limit budget of previous date is left or not
+            if(budget > 0) { // if yes, increase chance by 50%
+                percentWin = percentWin + (int) (percentWin*0.5);
+            } else { // if no, reset percentWin to 10%
+                percentWin = 10;
+            }
+            // new day, so reset the budget
+            budget = 50000;
+            // set the saved date by current date
+            savedDate = currentDate;
+        }
     }
 
     private static void choosePorduct(int totalMoney) {
@@ -110,8 +150,23 @@ public class Main {
         }
         System.out.println("You have left "+ money+ " VND" );
 
+        if (countCoke >=3) {
+            isLucky("Coke", 10000);
+        }
+
+        if (countPepsi >=3) {
+            isLucky("Pepsi", 10000);
+        }
+
+        if (countSoda >=3) {
+            isLucky("Soda", 20000);
+        }
+
     }
 
+    private static void isGotPrize(){
+
+    }
 
     private static boolean checkEnoughMoney(int totalMoney, int price){
         return totalMoney >= price ? true : false;
