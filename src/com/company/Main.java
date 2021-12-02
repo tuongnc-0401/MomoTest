@@ -15,10 +15,25 @@ public class Main {
     public static int budget = 50000;
     public static int percentWin = 10;
     public static void main(String[] args) {
-        int totalMoney = 0;
-        totalMoney = inputMoney();
-        choosePorduct(totalMoney);
 
+        while (true) {
+            int totalMoney = 0;
+            System.out.println("=== Welcome to Coin Operator Soda Machine ===");
+            totalMoney = inputMoney();
+            choosePorduct(totalMoney);
+
+
+            System.out.println("Do you want to continue use Machine?");
+            System.out.println("1. Yes");
+            System.out.println("2. No");
+            System.out.print("Your choices (1-2): ");
+            Scanner input = new Scanner(System.in);
+            String choices = input.nextLine().trim();
+            // user dont want to buy
+            if (choices.equals("2")) {
+                break;
+            }
+        }
     }
 
     /**
@@ -28,9 +43,6 @@ public class Main {
      * @param value: value of product
      */
     private static void isLucky (String product, int value){
-        // send notification for user
-        System.out.println("You buy more than 3 "+ product+" , so you have a chance to win a free" +
-                " product!");
 
         // check available promotion every transaction, to update percentWin
         checkAvailablePromotion();
@@ -86,6 +98,7 @@ public class Main {
         int countCoke = 0, countPepsi = 0, countSoda = 0;
         Scanner input = new Scanner(System.in);
         String choices;
+        // menu for user to choose
         while (true) {
             System.out.println("-----------You have " + money + " VND--------");
             System.out.println("Please choose the product");
@@ -97,14 +110,16 @@ public class Main {
             System.out.print("Choose number (1-3): ");
             choices =input.nextLine().trim();
 
+            // check if the input is wrong
             if (!choices.equals("1")&&!choices.equals("2") && !choices.equals("3")&& !choices.equals("4")) {
                 System.out.println("You enter the wrong input! Please enter it again");
             } else {
-
+                // user dont want to continue buying
                 if(choices.equals("4")){
                     break;
                 }
 
+                // user want to buy Coke
                 if (choices.equals("1")) {
                     if(!checkEnoughMoney(money,10000)){
                         System.out.println("You don't have enough money");
@@ -112,14 +127,14 @@ public class Main {
                     }
                     money -= 10000;
                     countCoke+=1;
-                } else if (choices.equals("2")) {
+                } else if (choices.equals("2")) { // user want to buy Pepsi
                     if(!checkEnoughMoney(money,10000)){
                         System.out.println("You don't have enough money");
                         break;
                     }
                     money -= 10000;
                     countPepsi+=1;
-                } else if (choices.equals("3")) {
+                } else if (choices.equals("3")) { // user want to buy Soda
                     if(!checkEnoughMoney(money,20000)){
                         System.out.println("You don't have enough money");
                         break;
@@ -127,20 +142,20 @@ public class Main {
                     money -= 20000;
                     countSoda+=1;
                 }
-
+                // ask user to continue buying
                 System.out.println("Do you want to continue buying?");
                 System.out.println("1. Yes");
                 System.out.println("2. No");
                 System.out.print("Your choices (1-2): ");
                 choices =input.nextLine().trim();
+                // user dont want to buy
                 if (choices.equals("2")){
                     break;
                 }
             }
-
-
-
         }
+        // Print the result of purchase
+        System.out.println("========================");
         if(countCoke!=0 || countPepsi!=0 || countSoda!=0){
             System.out.println("You bought :");
         }
@@ -153,31 +168,59 @@ public class Main {
         if(countSoda!=0) {
             System.out.println(countSoda + " Soda");
         }
-        System.out.println("You have left "+ money+ " VND" );
-
+        System.out.println("Your refund is "+ money+ " VND" );
+        System.out.println("========================");
+        // If user buy more than 3 consecutive product, they have chance to win a free product
         if (countCoke >=3) {
-            isLucky("Coke", 10000);
+            int ticket = countCoke /3; // if users buy 6, they get 2 ticket chance to win a free
+            System.out.println(" You buy "+ countCoke+ " so you have "+ ticket+" chances to win " +
+                    "a free Coke" );
+            for (int i = 0; i < ticket; i++){
+                isLucky("Coke", 10000);
+            }
         }
 
         if (countPepsi >=3) {
-            isLucky("Pepsi", 10000);
+            int ticket = countPepsi /3; // if users buy 9, they get 3 ticket chance to win a free
+            System.out.println(" You buy "+ countPepsi+ " so you have "+ ticket+" chances to win " +
+                    "a free Pepsi" );
+            for (int i = 0; i < ticket; i++){
+                isLucky("Pepsi", 10000);
+            }
         }
 
         if (countSoda >=3) {
-            isLucky("Soda", 20000);
+
+            int ticket = countSoda / 3; // if users buy 3, they get 1 ticket chance to win a free
+            System.out.println(" You buy "+ countSoda+ " so you have "+ ticket+" chances to win " +
+                    "a free Pepsi" );
+            for (int i = 0; i < ticket; i++){
+                isLucky("Soda", 20000);
+            }
         }
 
     }
 
 
-
+    /**
+     * check amount of money is enough to buy product
+     * @param totalMoney
+     * @param price
+     * @return true or false
+     */
     private static boolean checkEnoughMoney(int totalMoney, int price){
         return totalMoney >= price ? true : false;
     }
+
+    /**
+     * user input money
+     * @return total money
+     */
     private static int inputMoney() {
-        int money = 0;
+        int money = 0; // total money
         Scanner input = new Scanner(System.in);
         String choices;
+        // give the options for user to enter money
         while (true) {
             System.out.println("-----------You have input " + money + " VND--------");
             System.out.println("Please enter the money");
@@ -190,6 +233,7 @@ public class Main {
             System.out.println("---------------------------");
             System.out.print("Choose number (1-6): ");
             choices =input.nextLine().trim();
+            // add the money to total money
             if (choices.equals("1")) {
                money += 10000;
             } else if (choices.equals("2")) {
@@ -200,8 +244,8 @@ public class Main {
                 money += 100000;
             } else if (choices.equals("5")) {
                 money += 200000;
-            } else if (choices.equals("6")) {
-                return money;
+            } else if (choices.equals("6")) { // user do not enter money and want to buy
+                return money; // return the total money
             } else {
                 System.out.println("You enter the wrong input! Please enter it again");
             }
