@@ -74,6 +74,11 @@ public class Main {
         }
     }
 
+    /**
+     * After inputting money, user will choose product
+     * this function will let user choose product which they want to buy
+     * @param totalMoney : amount of money, user inputted
+     */
     private static void choosePorduct(int totalMoney) {
         int money = totalMoney;
         System.out.println("You have inputted "+money+" VND");
@@ -164,9 +169,7 @@ public class Main {
 
     }
 
-    private static void isGotPrize(){
 
-    }
 
     private static boolean checkEnoughMoney(int totalMoney, int price){
         return totalMoney >= price ? true : false;
